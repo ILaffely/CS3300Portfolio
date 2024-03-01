@@ -2,8 +2,22 @@ from django.db import models
 from django.urls import reverse
 
 # Create your models here.
-
-
+#Portfolio Model
+class Portfolio(models.Model):
+    title = models.CharField(max_length=200)
+    contact_email = models.CharField("Contact Email", max_length=200)
+    is_active = models.BooleanField(default=False)
+    about = models.TextField(blank=True)
+    
+    #Default String
+    def __str__(self):
+        return self.title
+    
+    
+    def get_absolute_url(self):
+        return reverse('Portfolio-detail', args=[str(self.id)]) 
+    
+#Student Model  
 class Student(models.Model):
 
 
@@ -20,6 +34,8 @@ class Student(models.Model):
     name = models.CharField(max_length=200)
     email = models.CharField("UCCS Email", max_length=200)
     major = models.CharField(max_length=200, choices=MAJOR, blank = True)
+    portfolio = models.OneToOneField(Portfolio, on_delete=models.CASCADE, default=None)
+    
     #Define default String to return the name for representing the Model object."
     def __str__(self):
         return self.name
@@ -29,4 +45,20 @@ class Student(models.Model):
     #if you define this method then Django will automatically
     # add a "View on Site" button to the model's record editing screens in the Admin site
     def get_absolute_url(self):
-        return reverse('student-detail', args=[str(self.id)])   
+        return reverse('student-detail', args=[str(self.id)]) 
+
+#Project model
+class Project(models.Model):
+    title = models.CharField(max_length=200)
+    desctiption = models.TextField()
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, default=None)
+    
+    #Defalut String
+    def __str__(self):
+        return self.title
+    
+    #get URL
+    def get_absolute_url(self):
+        return reverse('project-detail', args=[str(self.id)]) 
+
+    
